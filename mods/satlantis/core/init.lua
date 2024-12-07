@@ -1,0 +1,1 @@
+minetest.debug("Satlantis Mod: Core Load Started")
