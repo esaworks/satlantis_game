@@ -7,10 +7,8 @@
 -- Also, pathfinding related mcl_mobs class properties need to be implemented into the Mobs Redo 
 -- since path calculations stores states within the mcl_mobs class. 
 
--- Taken from VoxeLibre mcl_mobs mod folder. Do I need to include more than pathfinding?
--- -- movement: general voluntary mob movement, walking avoiding cliffs etc.
--- dofile(path .. "/movement.lua")
--- -- pathfinding: pathfinding to target positions
--- dofile(path .. "/pathfinding.lua")
--- -- combat: attack logic
--- dofile(path .. "/combat.lua")
+local path = minetest.get_modpath("stl_addons")
+
+dofile(path .. "/mcl_movement.lua")
+dofile(path .. "/mcl_pathfinding.lua")
+dofile(path .. "/mcl_combat.lua")
