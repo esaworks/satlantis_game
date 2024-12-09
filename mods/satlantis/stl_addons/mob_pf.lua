@@ -1,0 +1,16 @@
+-- This addon's purpose is to include advanced pathfinding features of VoxeLibre's mobs
+-- into Mobs Redo API monsters, MC Mobs etc. 
+-- 
+-- How to do it: I already copied Mobs Redo related mods under the satlantis game folder.
+-- I will take VoxeLibres pathfinding code into same directory of this file,
+-- change/adapt the code while making minimal changes in it.
+-- Also, pathfinding related mcl_mobs class properties need to be implemented into the Mobs Redo 
+-- since path calculations stores states within the mcl_mobs class. 
+
+-- Taken from VoxeLibre mcl_mobs mod folder. Do I need to include more than pathfinding?
+-- -- movement: general voluntary mob movement, walking avoiding cliffs etc.
+-- dofile(path .. "/movement.lua")
+-- -- pathfinding: pathfinding to target positions
+-- dofile(path .. "/pathfinding.lua")
+-- -- combat: attack logic
+-- dofile(path .. "/combat.lua")
