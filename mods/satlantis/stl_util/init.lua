@@ -1,1 +1,1 @@
-minetest.debug("Satlantis Mod: Util Load Started")
+
