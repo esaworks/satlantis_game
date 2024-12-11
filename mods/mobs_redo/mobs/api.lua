@@ -831,9 +831,7 @@ function mob_class:check_for_death(cmi_cause)
 	self.passive = true
 	self.state = "die"
 	self.fly = false
-
-	satlantis.debug("Checking death animation params for: "..self.name)
-	satlantis.debug("anim:"..self.animation.." die start:"..self.animation.die_start.." die end:"..self.animation.die_end)
+	
 	-- check for custom death function and die animation
 	if self.animation and self.animation.die_start and self.animation.die_end then
 		local frames = self.animation.die_end - self.animation.die_start
