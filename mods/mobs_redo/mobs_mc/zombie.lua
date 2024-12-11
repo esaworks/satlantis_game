@@ -72,7 +72,7 @@ local zombie = {
 	jump = true,
 	--jump_height = 3,
 	group_attack = true,
-	drops = drops_zombie,
+	drops = {}, -- drops_zombie,
 	animation = {
 		speed_normal = 25,		speed_run = 50,
 		stand_start = 40,		stand_end = 80,
@@ -88,53 +88,53 @@ local zombie = {
 
 mobs:register_mob("mobs_mc:zombie", zombie)
 
--- Baby zombie.
--- A smaller and more dangerous variant of the zombie
+-- -- Baby zombie.
+-- -- A smaller and more dangerous variant of the zombie
 
-local baby_zombie = table.copy(zombie)
-baby_zombie.collisionbox = {-0.25, -0.01, -0.25, 0.25, 0.94, 0.25}
-baby_zombie.visual_size = {x=zombie.visual_size.x/2, y=zombie.visual_size.y/2}
-baby_zombie.walk_velocity = 1.2
-baby_zombie.run_velocity = 2.4
-baby_zombie.light_damage = 0
+-- local baby_zombie = table.copy(zombie)
+-- baby_zombie.collisionbox = {-0.25, -0.01, -0.25, 0.25, 0.94, 0.25}
+-- baby_zombie.visual_size = {x=zombie.visual_size.x/2, y=zombie.visual_size.y/2}
+-- baby_zombie.walk_velocity = 1.2
+-- baby_zombie.run_velocity = 2.4
+-- baby_zombie.light_damage = 0
 
-mobs:register_mob("mobs_mc:baby_zombie", baby_zombie)
+-- mobs:register_mob("mobs_mc:baby_zombie", baby_zombie)
 
--- Husk.
--- Desert variant of the zombie
-local husk = table.copy(zombie)
-husk.textures = {{"mobs_mc_husk.png"}}
-husk.light_damage = 0
-husk.water_damage = 3
-husk.drops = drops_common
--- TODO: Husks avoid water
+-- -- Husk.
+-- -- Desert variant of the zombie
+-- local husk = table.copy(zombie)
+-- husk.textures = {{"mobs_mc_husk.png"}}
+-- husk.light_damage = 0
+-- husk.water_damage = 3
+-- husk.drops = drops_common
+-- -- TODO: Husks avoid water
 
-mobs:register_mob("mobs_mc:husk", husk)
+-- mobs:register_mob("mobs_mc:husk", husk)
 
--- Baby husk.
--- A smaller and more dangerous variant of the husk
-local baby_husk = table.copy(husk)
-baby_husk.collisionbox = {-0.25, -0.01, -0.25, 0.25, 0.94, 0.25}
-baby_husk.visual_size = {x=zombie.visual_size.x/2, y=zombie.visual_size.y/2}
-baby_husk.walk_velocity = 1.2
-baby_husk.run_velocity = 2.4
+-- -- Baby husk.
+-- -- A smaller and more dangerous variant of the husk
+-- local baby_husk = table.copy(husk)
+-- baby_husk.collisionbox = {-0.25, -0.01, -0.25, 0.25, 0.94, 0.25}
+-- baby_husk.visual_size = {x=zombie.visual_size.x/2, y=zombie.visual_size.y/2}
+-- baby_husk.walk_velocity = 1.2
+-- baby_husk.run_velocity = 2.4
 
-mobs:register_mob("mobs_mc:baby_husk", baby_husk)
+-- mobs:register_mob("mobs_mc:baby_husk", baby_husk)
 
 
 -- Spawning
 
 mobs:spawn_specific("mobs_mc:zombie", mobs_mc.spawn.solid, {"air"}, 0, 7, 30, 6000, 4, mobs_mc.spawn_height.overworld_min, mobs_mc.spawn_height.overworld_max)
--- Baby zombie is 20 times less likely than regular zombies
-mobs:spawn_specific("mobs_mc:baby_zombie", mobs_mc.spawn.solid, {"air"}, 0, 7, 30, 60000, 4, mobs_mc.spawn_height.overworld_min, mobs_mc.spawn_height.overworld_max)
-mobs:spawn_specific("mobs_mc:husk", mobs_mc.spawn.desert, {"air"}, 0, 7, 30, 6500, 4, mobs_mc.spawn_height.overworld_min, mobs_mc.spawn_height.overworld_max)
-mobs:spawn_specific("mobs_mc:baby_husk", mobs_mc.spawn.desert, {"air"}, 0, 7, 30, 65000, 4, mobs_mc.spawn_height.overworld_min, mobs_mc.spawn_height.overworld_max)
+-- -- Baby zombie is 20 times less likely than regular zombies
+-- mobs:spawn_specific("mobs_mc:baby_zombie", mobs_mc.spawn.solid, {"air"}, 0, 7, 30, 60000, 4, mobs_mc.spawn_height.overworld_min, mobs_mc.spawn_height.overworld_max)
+-- mobs:spawn_specific("mobs_mc:husk", mobs_mc.spawn.desert, {"air"}, 0, 7, 30, 6500, 4, mobs_mc.spawn_height.overworld_min, mobs_mc.spawn_height.overworld_max)
+-- mobs:spawn_specific("mobs_mc:baby_husk", mobs_mc.spawn.desert, {"air"}, 0, 7, 30, 65000, 4, mobs_mc.spawn_height.overworld_min, mobs_mc.spawn_height.overworld_max)
 
 -- Compatibility
 mobs:alias_mob("mobs:zombie", "mobs_mc:zombie")
 
 -- Spawn eggs
-mobs:register_egg("mobs_mc:husk", S("Husk"), "mobs_mc_spawn_icon_husk.png", 0)
+--mobs:register_egg("mobs_mc:husk", S("Husk"), "mobs_mc_spawn_icon_husk.png", 0)
 mobs:register_egg("mobs_mc:zombie", S("Zombie"), "mobs_mc_spawn_icon_zombie.png", 0)
 
 if minetest.settings:get_bool("log_mods") then

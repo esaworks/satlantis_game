@@ -40,27 +40,28 @@ local skeleton = {
 	run_velocity = 2.4,
 	damage = 2,
 	reach = 2,
-	drops = {
-		{name = mobs_mc.items.arrow,
-		chance = 1,
-		min = 0,
-		max = 2,},
-		{name = mobs_mc.items.bow,
-		chance = 11,
-		min = 1,
-		max = 1,},
-		{name = mobs_mc.items.bone,
-		chance = 1,
-		min = 0,
-		max = 2,},
+	drops = {}, -- 
+	-- drops = {
+	-- 	{name = mobs_mc.items.arrow,
+	-- 	chance = 1,
+	-- 	min = 0,
+	-- 	max = 2,},
+	-- 	{name = mobs_mc.items.bow,
+	-- 	chance = 11,
+	-- 	min = 1,
+	-- 	max = 1,},
+	-- 	{name = mobs_mc.items.bone,
+	-- 	chance = 1,
+	-- 	min = 0,
+	-- 	max = 2,},
 
-		-- Head
-		-- TODO: Only drop if killed by charged creeper
-		{name = mobs_mc.items.head_skeleton,
-		chance = 200, -- 0.5% chance
-		min = 1,
-		max = 1,},
-	},
+	-- 	-- Head
+	-- 	-- TODO: Only drop if killed by charged creeper
+	-- 	{name = mobs_mc.items.head_skeleton,
+	-- 	chance = 200, -- 0.5% chance
+	-- 	min = 1,
+	-- 	max = 1,},
+	-- },
 	animation = {
 		stand_start = 0,
 		stand_end = 40,
@@ -101,23 +102,23 @@ mobs:register_mob("mobs_mc:skeleton", skeleton)
 --################### STRAY
 --###################
 
-local stray = table.copy(skeleton)
-stray.mesh = "mobs_mc_stray.b3d"
-stray.textures = {
-	{"mobs_mc_stray.png"},
-}
--- TODO: different sound (w/ echo)
--- TODO: stray's arrow inflicts slowness status
-table.insert(stray.drops, {
-	-- Chance to drop additional arrow.
-	-- TODO: Should be tipped arrow of slowness
-	name = mobs_mc.items.arrow,
-	chance = 2,
-	min = 1,
-	max = 1,
-})
+-- local stray = table.copy(skeleton)
+-- stray.mesh = "mobs_mc_stray.b3d"
+-- stray.textures = {
+-- 	{"mobs_mc_stray.png"},
+-- }
+-- -- TODO: different sound (w/ echo)
+-- -- TODO: stray's arrow inflicts slowness status
+-- table.insert(stray.drops, {
+-- 	-- Chance to drop additional arrow.
+-- 	-- TODO: Should be tipped arrow of slowness
+-- 	name = mobs_mc.items.arrow,
+-- 	chance = 2,
+-- 	min = 1,
+-- 	max = 1,
+-- })
 
-mobs:register_mob("mobs_mc:stray", stray)
+-- mobs:register_mob("mobs_mc:stray", stray)
 
 -- compatibility
 mobs:alias_mob("mobs:skeleton", "mobs_mc:skeleton")
@@ -127,14 +128,14 @@ mobs:spawn_specific("mobs_mc:skeleton", mobs_mc.spawn.solid, {"air"}, 0, 7, 20, 
 -- Nether spawn
 mobs:spawn_specific("mobs_mc:skeleton", mobs_mc.spawn.nether_fortress, {"air"}, 0, 7, 30, 10000, 3, mobs_mc.spawn_height.nether_min, mobs_mc.spawn_height.nether_max)
 
--- Stray spawn
--- TODO: Spawn directly under the sky
-mobs:spawn_specific("mobs_mc:stray", mobs_mc.spawn.snow, {"air"}, 0, 7, 20, 19000, 2, mobs_mc.spawn_height.water, mobs_mc.spawn_height.overworld_max)
+-- -- Stray spawn
+-- -- TODO: Spawn directly under the sky
+-- mobs:spawn_specific("mobs_mc:stray", mobs_mc.spawn.snow, {"air"}, 0, 7, 20, 19000, 2, mobs_mc.spawn_height.water, mobs_mc.spawn_height.overworld_max)
 
 
 -- spawn eggs
 mobs:register_egg("mobs_mc:skeleton", S("Skeleton"), "mobs_mc_spawn_icon_skeleton.png", 0)
-mobs:register_egg("mobs_mc:stray", S("Stray"), "mobs_mc_spawn_icon_stray.png", 0)
+-- mobs:register_egg("mobs_mc:stray", S("Stray"), "mobs_mc_spawn_icon_stray.png", 0)
 
 if minetest.settings:get_bool("log_mods") then
 	minetest.log("action", "MC Skeleton loaded")
