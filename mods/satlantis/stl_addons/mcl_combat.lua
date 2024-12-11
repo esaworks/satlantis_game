@@ -1,6 +1,6 @@
 -- local math, vector, minetest, mcl_mobs = math, vector, minetest, mcl_mobs
 -- local mob_class = mcl_mobs.mob_class
--- 2 lines abowe commented out by Satlantis Dev: to adapt this into Mobs Redo "mobs.mob_class"
+-- 2 lines above commented out by Satlantis Dev: to adapt this into Mobs Redo "mobs.mob_class"
 local math, vector, minetest, mcl_mobs = math, vector, minetest, mobs
 local mob_class = mcl_mobs.mob_class
 local damage_enabled = minetest.settings:get_bool("enable_damage")
@@ -503,14 +503,17 @@ function mob_class:safe_boom(pos, strength)
 	}, true)
 	local radius = strength
 	entity_physics(pos, radius)
-	mcl_mobs.effect(pos, 32, "mcl_particles_smoke.png", radius * 3, radius * 5, radius, 1, 0)
+	mcl_mobs.effect(pos, 32, "smoke_puff.png", radius * 3, radius * 5, radius, 1, 0)
 end
 
 
 -- make explosion with protection and tnt mod check
 function mob_class:boom(pos, strength, fire)
 	if mobs_griefing and not minetest.is_protected(pos, "") then
-		mcl_explosions.explode(pos, strength, { drop_chance = 1.0, fire = fire }, self.object)
+		-- ESA Comment out mcl_explosions
+		-- mcl_explosions.explode(pos, strength, { drop_chance = 1.0, fire = fire }, self.object)
+		-- ESA Add function
+		mobs:boom(self, pos, strength, strength, "tnt_smoke.png")
 	else
 		mcl_mobs.mob_class.safe_boom(self, pos, strength) --need to call it this way bc self is the "arrow" object here
 	end
@@ -534,8 +537,8 @@ function mob_class:on_punch(hitter, tflp, tool_capabilities, dir)
 		if self.protected and minetest.is_protected(mob_pos, hitter:get_player_name()) then
 			return
 		end
-
-		mcl_potions.update_haste_and_fatigue(hitter)
+		-- ESA disable mcl_potions
+		--mcl_potions.update_haste_and_fatigue(hitter)
 	end
 
 	local time_now = minetest.get_us_time()
@@ -577,10 +580,11 @@ function mob_class:on_punch(hitter, tflp, tool_capabilities, dir)
 	local weapon = hitter:get_wielded_item()
 	local punch_interval = 1.4
 
-	-- exhaust attacker
-	if is_player then
-		mcl_hunger.exhaust(hitter:get_player_name(), mcl_hunger.EXHAUST_ATTACK)
-	end
+	-- ESA disable mcl_hunger
+	-- -- exhaust attacker
+	-- if is_player then
+	-- 	mcl_hunger.exhaust(hitter:get_player_name(), mcl_hunger.EXHAUST_ATTACK)
+	-- end
 
 	-- calculate mob damage
 	local damage = 0
@@ -608,18 +612,19 @@ function mob_class:on_punch(hitter, tflp, tool_capabilities, dir)
 	end
 
 	-- strength and weakness effects
-	local strength = mcl_potions.get_effect(hitter, "strength")
-	local weakness = mcl_potions.get_effect(hitter, "weakness")
-	local str_fac = strength and strength.factor or 1
-	local weak_fac = weakness and weakness.factor or 1
+	-- local strength = mcl_potions.get_effect(hitter, "strength")
+	-- local weakness = mcl_potions.get_effect(hitter, "weakness")
+	local str_fac = 1-- strength and strength.factor or 1 -- -- ESA disable mcl_potions
+	local weak_fac = 1-- weakness and weakness.factor or 1 -- -- ESA disable mcl_potions
 	damage = damage * str_fac * weak_fac
 
-	if weapon then
-		local fire_aspect_level = mcl_enchanting.get_enchantment(weapon, "fire_aspect")
-		if fire_aspect_level > 0 then
-			mcl_burning.set_on_fire(self.object, fire_aspect_level * 4)
-		end
-	end
+	-- ESA comment out mcl_enchanting
+	-- if weapon then
+	-- 	local fire_aspect_level = mcl_enchanting.get_enchantment(weapon, "fire_aspect")
+	-- 	if fire_aspect_level > 0 then
+	-- 		mcl_burning.set_on_fire(self.object, fire_aspect_level * 4)
+	-- 	end
+	-- end
 
 	-- check for tool immunity or special damage
 	for n = 1, #self.immune_to do
@@ -684,7 +689,8 @@ function mob_class:on_punch(hitter, tflp, tool_capabilities, dir)
 				}, true)
 			end
 
-			self:damage_effect(damage)
+			-- ESA Comment out "this is not implemented"
+			-- self:damage_effect(damage)
 
 			-- do damage
 			self.health = self.health - damage
@@ -733,8 +739,9 @@ function mob_class:on_punch(hitter, tflp, tool_capabilities, dir)
 				luaentity = hitter:get_luaentity()
 			end
 			if hitter and is_player then
-				local wielditem = hitter:get_wielded_item()
-				kb = kb + 9 * mcl_enchanting.get_enchantment(wielditem, "knockback")
+				-- ESA comment out mcl_enchanting
+				-- local wielditem = hitter:get_wielded_item()
+				-- kb = kb + 9 * mcl_enchanting.get_enchantment(wielditem, "knockback")
 				-- add player velocity to mob knockback
 				local hv = hitter:get_velocity()
 				local dir_dot = (hv.x * dir.x) + (hv.z * dir.z)
@@ -986,7 +993,10 @@ function mob_class:do_states_attack (dtime)
 				local pos = self.object:get_pos()
 
 				if mobs_griefing and not minetest.is_protected(pos, "") then
-					mcl_explosions.explode(mcl_util.get_object_center(self.object), self.explosion_strength, { drop_chance = 1.0 }, self.object)
+					-- ESA Comment out mcl_explosions
+					-- mcl_explosions.explode(mcl_util.get_object_center(self.object), self.explosion_strength, { drop_chance = 1.0 }, self.object)
+					-- ESA Add function
+					mobs:boom(self, pos, self.explosion_strength, self.explosion_strength, "tnt_smoke.png")
 				else
 					minetest.sound_play(self.sounds.explode, {
 						pos = pos,
@@ -994,9 +1004,10 @@ function mob_class:do_states_attack (dtime)
 						max_hear_distance = self.sounds.distance or 32
 					}, true)
 					self:entity_physics(pos,entity_damage_radius)
-					mcl_mobs.effect(pos, 32, "mcl_particles_smoke.png", nil, nil, node_break_radius, 1, 0)
+					mcl_mobs.effect(pos, 32, "smoke_puff.png", nil, nil, node_break_radius, 1, 0)
 				end
-				mcl_burning.extinguish(self.object)
+				-- ESA comment out mcl_burning
+				-- mcl_burning.extinguish(self.object)
 				self.object:remove()
 
 				return true
@@ -1155,10 +1166,11 @@ function mob_class:do_states_attack (dtime)
 							full_punch_interval = 1.0,
 							damage_groups = {fleshy = self.damage}
 						}, nil)
-						if self.dealt_effect then
-							mcl_potions.give_effect_by_level(self.dealt_effect.name, self.attack,
-								self.dealt_effect.level, self.dealt_effect.dur)
-						end
+						-- ESA disable mcl_potions
+						-- if self.dealt_effect then
+						-- 	mcl_potions.give_effect_by_level(self.dealt_effect.name, self.attack,
+						-- 		self.dealt_effect.level, self.dealt_effect.dur)
+						-- end
 					end
 				else
 					self.custom_attack(self, p)

@@ -1,6 +1,6 @@
 -- local math, vector, minetest, mcl_mobs = math, vector, minetest, mcl_mobs
 -- local mob_class = mcl_mobs.mob_class
--- 2 lines abowe commented out by Satlantis Dev: to adapt this into Mobs Redo "mobs.mob_class"
+-- 2 lines above commented out by Satlantis Dev: to adapt this into Mobs Redo "mobs.mob_class"
 local math, vector, minetest, mcl_mobs = math, vector, minetest, mobs
 local mob_class = mcl_mobs.mob_class
 local DEFAULT_FALL_SPEED = -9.81*1.5
@@ -402,6 +402,31 @@ function mob_class:do_jump()
 
 	local pos = self.object:get_pos()
 	local yaw = self.object:get_yaw()
+
+	-- do 
+	-- 	-- stl_dump_table_diff()
+	-- 	satlantis.debug("Starting to list self")
+	-- 	for key, value in pairs(self) do 
+	-- 		local msg = key
+	-- 		if type(value) == "string" or type(value) == "number" then
+	-- 			msg = msg.." "..value
+	-- 		end
+	-- 		satlantis.debug(msg)
+	-- 	end
+	-- 	satlantis.debug("List ended")
+	-- end
+
+	-- if self.collisionbox == nil and self.name ~= nil then 
+	-- 	satlantis.debug("A collisionbox defining here")
+	-- 	local def_cb = { -0.3, 0.0, -0.3, 0.3, 1.77, 0.3 }
+	-- 	local def = minetest.registered_entities[self.name]
+	-- 	if def ~= nil then
+	-- 		self.collisionbox = def.collisionbox or def_cb
+	-- 	else 
+	-- 		self.collisionbox = def_cb
+	-- 	end
+	-- 	satlantis.debug("A collisionbox defined")
+	-- end
 
 	-- what is mob standing on?
 	pos.y = pos.y + self.collisionbox[2] - 0.2

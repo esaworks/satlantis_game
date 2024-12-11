@@ -28,6 +28,8 @@ mobs = {
 			or has("mcl_core:dirt") or has("default:dirt") or "mobs:fallback_node"
 }
 mobs.fallback_node = mobs.node_dirt
+-- ESA invis check added to prevent errors from mcl (probably will not used)
+mobs.invis = {}
 
 -- localize common functions
 
@@ -830,9 +832,10 @@ function mob_class:check_for_death(cmi_cause)
 	self.state = "die"
 	self.fly = false
 
+	satlantis.debug("Checking death animation params for: "..self.name)
+	satlantis.debug("anim:"..self.animation.." die start:"..self.animation.die_start.." die end:"..self.animation.die_end)
 	-- check for custom death function and die animation
 	if self.animation and self.animation.die_start and self.animation.die_end then
-
 		local frames = self.animation.die_end - self.animation.die_start
 		local speed = self.animation.die_speed or 15
 		local length = max((frames / speed), 0)
@@ -915,8 +918,44 @@ function mobs:is_node_dangerous(mob_object, nodename)
 	return is_node_dangerous(mob_object, nodename)
 end
 
--- is mob facing a cliff
+-- ESA got from mcl_mobs/physics.lua
+function mob_class:player_in_active_range()
+	for _,p in pairs(minetest.get_connected_players()) do
+		local pos = self.object:get_pos()
+		if pos and vector.distance(pos, p:get_pos()) <= mob_active_range then return true end
+		-- slightly larger than the mc 32 since mobs spawn on that circle and easily stand still immediately right after spawning.
+	end
+end
 
+-- Return true if object is in view_range
+function mob_class:object_in_range(object)
+	if not object then
+		return false
+	end
+	local factor
+	-- ESA Comment out mcl_armor
+	-- -- Apply view range reduction for special player armor
+	-- if object:is_player() then
+	-- 	local factors = mcl_armor.player_view_range_factors[object]
+	-- 	factor = factors and factors[self.name]
+	-- end
+
+	-- Distance check
+	local dist
+	if factor and factor == 0 then
+		return false
+	elseif factor then
+		dist = self.view_range * factor
+	else
+		dist = self.view_range
+	end
+
+	local p1, p2 = self.object:get_pos(), object:get_pos()
+	return p1 and p2 and (vector.distance(p1, p2) <= dist)
+end
+-- !ESA got from mcl_mobs/physics.lua
+
+-- is mob facing a cliff
 function mob_class:is_at_cliff()
 
 	if self.driver or self.fear_height == 0 then -- 0 for no falling protection!
@@ -3077,6 +3116,13 @@ function mob_class:mob_activate(staticdata, def, dtime)
 	self.standing_in = "air"
 	self.standing_on = "air"
 	self.state = self.state or "stand"
+	
+	-- ESA satlantis missing properties stitch from mcl_mobs/api.lua
+	self.collisionbox = colbox
+	self.selectionbox = selbox
+	self.visual_size = vis_size
+	self.jump_sound_cooloff = 0 -- used to prevent jump sound from being played too often in short time
+	self.opinion_sound_cooloff = 0 -- used to prevent sound spam of particular sound types
 
 	-- set anything changed above
 	self:set_yaw((random(0, 360) - 180) / 180 * pi, 6)
@@ -3363,10 +3409,24 @@ function mobs:register_mob(name, def)
 			damage_texture_modifier = def.damage_texture_modifier or "^[colorize:#c9900070",
 		},
 
+		-- ESA added 
+		use_texture_alpha = def.use_texture_alpha,
+		head_swivel = def.head_swivel or nil, -- bool to activate this function
+		head_yaw_offset = def.head_yaw_offset or 0, -- for wonkey model bones
+		head_pitch_multiplier = def.head_pitch_multiplier or 1, --for inverted pitch
+		bone_eye_height = def.bone_eye_height or 1.4, -- head bone offset
+		head_eye_height = def.head_eye_height or def.bone_eye_height or 0, -- how hight aproximatly the mobs head is fromm the ground to tell the mob how high to look up at the player
+		curiosity = def.curiosity or 1, -- how often mob will look at player on idle
+		head_yaw = def.head_yaw or "y", -- axis to rotate head on
+		horizontal_head_height = def.horizontal_head_height or 0,
+		wears_armor = def.wears_armor, -- a number value used to index texture slot for armor
+		stepheight = def.stepheight or 0.6,
+		-- !ESA added
 		name = name,
 		type = def.type,
 		_nametag = def.nametag,
 		attack_type = def.attack_type,
+		attack_frequency = def.attack_frequency, --ESA Added
 		fly = def.fly,
 		fly_in = def.fly_in,
 		keep_flying = def.keep_flying,
@@ -3385,6 +3445,8 @@ function mobs:register_mob(name, def)
 		base_selbox = def.selectionbox or collisionbox,
 		base_size = def.visual_size or {x = 1, y = 1},
 
+		xp_timestamp = 0,  --ESA Added
+		invul_timestamp = 0,  --ESA Added
 		view_range = def.view_range,
 		walk_velocity = def.walk_velocity,
 		run_velocity = def.run_velocity,
@@ -3410,6 +3472,7 @@ function mobs:register_mob(name, def)
 		sounds = def.sounds,
 		animation = def.animation,
 		follow = def.follow,
+		nofollow = def.nofollow,  --ESA Added
 		jump = def.jump,
 		walk_chance = def.walk_chance,
 		stand_chance = def.stand_chance,
@@ -3425,6 +3488,9 @@ function mobs:register_mob(name, def)
 		replace_what = def.replace_what,
 		replace_with = def.replace_with,
 		replace_offset = def.replace_offset,
+		replace_delay = def.replace_delay or 0,  --ESA Added
+		timer = 0,  --ESA Added
+		frame_speed_multiplier = 1,  --ESA Added
 		reach = def.reach,
 		texture_list = def.textures,
 		texture_mods = def.texture_mods or "",
@@ -3436,6 +3502,7 @@ function mobs:register_mob(name, def)
 		immune_to = def.immune_to,
 		explosion_radius = def.explosion_radius,
 		explosion_damage_radius = def.explosion_damage_radius,
+		explosiontimer_reset_radius = def.explosiontimer_reset_radius,  --ESA Added
 		explosion_timer = def.explosion_timer,
 		allow_fuse_reset = def.allow_fuse_reset,
 		stop_to_explode = def.stop_to_explode,

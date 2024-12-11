@@ -1,6 +1,6 @@
 -- local math, vector, minetest, mcl_mobs = math, vector, minetest, mcl_mobs
 -- local mob_class = mcl_mobs.mob_class
--- 2 lines abowe commented out by Satlantis Dev: to adapt this into Mobs Redo "mobs.mob_class"
+-- 2 lines above commented out by Satlantis Dev: to adapt this into Mobs Redo "mobs.mob_class"
 local math, vector, minetest, mcl_mobs = math, vector, minetest, mobs
 local mob_class = mcl_mobs.mob_class
 
@@ -22,7 +22,7 @@ local plane_adjacents = {
 	vector.new(0,0,-1),
 }
 
-local LOGGING_ON = minetest.settings:get_bool("mcl_logging_mobs_pathfinding",false)
+local LOGGING_ON = true --minetest.settings:get_bool("mcl_logging_mobs_pathfinding",false)
 
 local LOG_MODULE = "[Mobs Pathfinding]"
 local function mcl_log (message)
