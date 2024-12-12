@@ -92,7 +92,10 @@ function mob_class:smart_mobs(s, p, dist, dtime)
 
 	local s1 = self.path.lastpos
 
-	local target_pos = self.attack:get_pos()
+	local target_pos = p 
+	if self.attack ~= nil then 
+		p = self.attack:get_pos()
+	end
 
 	-- is it becoming stuck?
 	if math.abs(s1.x - s.x) + math.abs(s1.z - s.z) < .5 then
