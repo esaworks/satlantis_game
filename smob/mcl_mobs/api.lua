@@ -1,6 +1,9 @@
 local mob_class = mcl_mobs.mob_class
 local mob_class_meta = {__index = mcl_mobs.mob_class}
 local math, vector, minetest, mcl_mobs = math, vector, minetest, mcl_mobs
+
+-- Save spawned mobs
+mcl_mobs.moblist = {}
 -- API for Mobs Redo: VoxeLibre Edition
 
 local PATHFINDING = "gowp"
@@ -147,6 +150,10 @@ function mob_class:mob_activate(staticdata, def, dtime)
 		self.object:remove()
 		return
 	end
+
+	-- Tracks mobID and add to moblist table to check if mob has been unloaded
+	self.mob_id = tonumber(staticdata)
+	table.insert(mcl_mobs.moblist, self)
 
 	local tmp = minetest.deserialize(staticdata)
 
@@ -391,6 +398,22 @@ end
 
 
 local function on_step_work (self, dtime)
+	-- Check if mob has to be replaced
+	local index = 0
+	for i, mob in pairs(mcl_mobs.moblist) do
+		if self.mob_id == mob.mob_id then
+			index = i
+		end
+	end
+
+	for i, entity in pairs(minetest.entities) do
+		if entity.name == self.name then
+			if entity.mob_id == self.mob_id then
+				mcl_mobs.moblist[index] = entity
+			end
+		end
+	end
+
 	local pos = self.object:get_pos()
 	if not pos then return end
 

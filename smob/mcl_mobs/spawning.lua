@@ -877,9 +877,15 @@ function mcl_mobs.spawn(pos,id)
 	else
 		dbg_spawn_counts[def.name] = dbg_spawn_counts[def.name] + 1
 	end
-	return minetest.add_entity(pos, def.name)
+
+	local mob_id = #mcl_mobs.moblist+1
+	minetest.add_entity(pos, def.name, tostring(mob_id))
+	return mob_id
 end
 
+function mcl_mobs.get_mob(id)
+	return mcl_mobs.moblist[id]
+end
 
 local function spawn_group(p,mob,spawn_on,amount_to_spawn)
 	local nn= minetest.find_nodes_in_area_under_air(vector.offset(p,-5,-3,-5),vector.offset(p,5,3,5),spawn_on)
@@ -896,7 +902,8 @@ local function spawn_group(p,mob,spawn_on,amount_to_spawn)
 			if mob.type_of_spawning == "water" then
 				sp = get_water_spawn(sp)
 			end
-			o =  mcl_mobs.spawn(sp,mob.name)
+			local id = mcl_mobs.spawn(sp,mob.name)
+			o = mcl_mobs.get_mob(id)
 			if o then dbg_spawn_succ = dbg_spawn_succ + 1 end
 		end
 	end
@@ -927,7 +934,8 @@ minetest.register_chatcommand("spawn_mob",{
 			mobname = string.sub(param, 1, mod1-1)
 		end
 
-		local mob = mcl_mobs.spawn(pos,mobname)
+		local id = mcl_mobs.spawn(pos,mobname)
+		local mob = mcl_mobs.get_mob(id)
 
 		if mob then
 			for c=1, #modifiers do
@@ -1156,7 +1164,8 @@ if mobs_spawn then
 							if logging then
 								minetest.log("action", "[mcl_mobs] Mob " .. mob_def.name .. " spawns on " ..minetest.get_node(vector.offset(spawning_position,0,-1,0)).name .." at ".. minetest.pos_to_string(spawning_position, 1))
 							end
-							spawned = mcl_mobs.spawn(spawning_position, mob_def.name)
+							local id = mcl_mobs.spawn(spawning_position, mob_def.name)
+							spawned = mcl_mobs.get_mob(id)
 						end
 
 						if spawned then
